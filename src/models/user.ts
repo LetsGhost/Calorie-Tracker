@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
   }
 })
 
-class User {
+export class User {
   @prop({ required: true })
   public email?: string;
 
