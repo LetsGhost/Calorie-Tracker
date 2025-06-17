@@ -63,7 +63,7 @@ export default function HomePage() {
         </div>
 
         <div className="text-center">
-          <Link href="/log" className="btn btn-success">
+          <Link href="/log" className="btn btn-success" >
             + Add Meal
           </Link>
         </div>
