@@ -18,6 +18,9 @@ export class User {
   @prop({ required: true })
   public createdAt?: Date;
 
+  @prop({ required: true, ref: () => 'User'})
+  public userId?: Ref<User>
+
 }
 
 
