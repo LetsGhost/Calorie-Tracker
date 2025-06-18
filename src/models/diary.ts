@@ -1,7 +1,7 @@
 import { prop, getModelForClass} from '@typegoose/typegoose';
 import { ObjectId } from 'mongoose';
 
-class Diary {
+export class Diary {
   @prop({required: true})
   public mealList?: ObjectId[];
 
