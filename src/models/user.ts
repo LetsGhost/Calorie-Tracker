@@ -2,6 +2,7 @@ import { prop, getModelForClass, pre } from '@typegoose/typegoose';
 import bcrypt from 'bcrypt';
 import type { Ref } from '@typegoose/typegoose/lib/types';
 import { Diary } from './diary';
+import mongoose from 'mongoose';
 
 @pre<User>('save', async function () {
   if (this.isModified('password')) {  
@@ -11,6 +12,8 @@ import { Diary } from './diary';
 })
 
 export class User {
+  public _id!: mongoose.ObjectId;
+
   @prop({ required: true })
   public email?: string;
 
