@@ -5,27 +5,49 @@ import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CalorieSummary from '../components/CalorieSummary';
 import MealList from '../components/MealList';
-import { useState } from 'react';
-import { useSession, signOut } from "next-auth/react";
+import { useState, useEffect } from 'react';
+import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const { data: session, status } = useSession();
+  const [lastCalories, setLastCalories] = useState(0);
+  const [diaryData, setDiaryData] = useState(null);
 
-  /*
-    This is the code (middleware) to check if a session is Valid
-    Please use this also in other components
+  // Fetch the user's diary data
+  const fetchDiaryData = async () => {
+    try {
+      const response = await fetch('/api/diarys');
+      if (!response.ok) {
+        throw new Error('Failed to fetch diary data');
+      }
+      const data = await response.json();
+      setDiaryData(data);
 
-  */
+      // Get the last value of the calories array
+      if (data.calories && data.calories.length > 0) {
+        setLastCalories(data.calories[data.calories.length - 1]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Use useEffect to fetch data on page load
+  useEffect(() => {
+    if (session) {
+      fetchDiaryData();
+    }
+  }, [session]);
+
+  // Handle loading and redirect cases
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   if (!session) {
-    return (
-      redirect("/auth/login")
-    );
+    redirect("/auth/login");
+    return null; // Ensure the component returns null after redirect
   }
 
   return (
@@ -41,44 +63,17 @@ export default function HomePage() {
         />
       </Head>
 
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container">
-          <Link className="navbar-brand" href="/">Calorie Tracker</Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            onClick={() => setIsNavCollapsed(!isNavCollapsed)}
-            aria-controls="navbarNav"
-            aria-expanded={!isNavCollapsed}
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className={`collapse navbar-collapse${isNavCollapsed ? '' : ' show'}`} id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
-                <Link className="nav-link" href="/">Home</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" href="/log">Log Meal</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" href="/auth/login" onClick={() => signOut()}>Logout</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      
 
       <div className="container py-5">
         <h1 className="mb-4 text-center">My Calorie Tracker</h1>
 
         <div className="mb-4">
-          <CalorieSummary goal={2200} consumed={1350} />
+          <CalorieSummary goal={2200} consumed={lastCalories} />
         </div>
 
         <div className="mb-4">
-          <MealList meals={[]} />
+          <MealList meals={diaryData?.mealList || []} />
         </div>
 
         <div className="text-center">
