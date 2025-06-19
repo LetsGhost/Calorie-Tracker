@@ -6,22 +6,25 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CalorieSummary from '../components/CalorieSummary';
 import MealList from '../components/MealList';
 import { useState } from 'react';
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const { data: session, status } = useSession();
 
+  /*
+    This is the code (middleware) to check if a session is Valid
+    Please use this also in other components
+
+  */
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
   if (!session) {
     return (
-      <div className="container py-5 text-center">
-        <h1>Please log in to access this page.</h1>
-        <Link href="/auth/login" className="btn btn-primary">Login</Link>
-      </div>
+      redirect("/auth/login")
     );
   }
 
@@ -60,7 +63,7 @@ export default function HomePage() {
                 <Link className="nav-link" href="/log">Log Meal</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" href="/log">Logout</Link>
+                <Link className="nav-link" href="/auth/login" onClick={() => signOut()}>Logout</Link>
               </li>
             </ul>
           </div>
