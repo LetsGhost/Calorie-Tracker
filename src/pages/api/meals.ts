@@ -19,16 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if(req.method === 'POST') {
     try {
-      const { name, calorie, protein, barcode, kg} = req.body
-      console.log('Received request body:', req.body);
+      // TODO: Protein does not get saved to the db fix!
 
-      console.log('Received meal data:', { name, calorie, protein, barcode });
+      const { name, calorie, protein, barcode, kg} = req.body
 
       if (typeof name !== 'string' || isNaN(parseFloat(calorie)) || isNaN(parseFloat(protein))) {
         return res.status(400).json({ error: 'Invalid or missing fields' });
       }
-
-      console.log("protein " +  protein)
 
       const meal = {
         name,
@@ -39,26 +36,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         createdAt: new Date(),
       };
 
-      console.log('1Meal object to be saved:', meal);
+      //console.log('1Meal object to be saved:', meal);
 
-      // Check if the meal already exists based on name or barcode
-      const existingMeal = await MealModel.findOne({
-        $or: [{ name: meal.name }, { barcode: meal.barcode }],
-      });
+      const query: Record<string, unknown>[] = [{ name: meal.name }];
 
-      console.log('2Meal object to be saved:', meal);
+      if (meal.barcode && meal.barcode.trim() !== '') {
+        query.push({ barcode: meal.barcode });
+      }
 
-      if (existingMeal === null) {
+      const existingMeal = await MealModel.findOne({ $or: query });
+
+      //console.log('2Meal object to be saved:', meal);
+
+      if (existingMeal) {
         console.log('Meal already exists:');
         return res.status(409).json({ error: 'Meal already exists' });
       }
 
-      console.log('3Meal object to be saved:', meal);
+      //console.log('3Meal object to be saved:', meal);
 
       const newMeal = await MealModel.create(meal);
 
-      console.log('4Meal object to be saved:', meal);
-      console.log('5Meal object to be saved:', newMeal);
+      //console.log('4Meal object to be saved:', meal);
+      //console.log('5Meal object to be saved:', newMeal);
 
       // Retrieve user from session
       const user = session.user;
