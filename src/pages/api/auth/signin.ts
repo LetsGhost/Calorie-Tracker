@@ -58,6 +58,7 @@ export const authOptions: NextAuthConfig = {
           }
         } catch (error) {
           console.error("Error during authorization:", error);
+          return null;
         }
       },
     }),
@@ -76,7 +77,7 @@ export const authOptions: NextAuthConfig = {
     return token;
   },
   async session({ session, token }: { session: Session, token: JWT }) {
-    console.log("Session Callback:");
+    console.log("Session Callback: " + JSON.stringify(session));
     if (token?.id && session.user) {
       session.user.id = token.id as string;
     }
