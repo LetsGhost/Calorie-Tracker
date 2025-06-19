@@ -19,10 +19,13 @@ export default function LoginPage() {
       password,
     });
 
+    console.log("Login response:", res);
+
     if (res?.ok) {
       setMessage("✅ Login successful!");
-      window.location.href = "/home"; // redirect manually
+      //window.location.href = "/home"; // redirect manually
     } else {
+      console.error("Login failed:", res?.error);
       setMessage("❌ Invalid email or password.");
     }
   };
