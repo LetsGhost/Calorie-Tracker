@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SessionProvider } from "next-auth/react"; // Import SessionProvider
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <SessionProvider> {/* Wrap children with SessionProvider */}
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

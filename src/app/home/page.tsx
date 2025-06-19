@@ -1,13 +1,29 @@
 'use client';
+
 import Head from 'next/head';
 import Link from 'next/link';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CalorieSummary from '../components/CalorieSummary';
 import MealList from '../components/MealList';
 import { useState } from 'react';
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (!session) {
+    return (
+      <div className="container py-5 text-center">
+        <h1>Please log in to access this page.</h1>
+        <Link href="/auth/login" className="btn btn-primary">Login</Link>
+      </div>
+    );
+  }
 
   return (
     <>

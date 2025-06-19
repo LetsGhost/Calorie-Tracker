@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,26 +11,19 @@ export default function LoginPage() {
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // prevent default form submit
 
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
 
-      if (res.ok) {
-        const data = await res.json();
-        setMessage(`Login successful! Token: ${data.token}`);
-        setEmail('');
-        setPassword('');
-      } else {
-        const error = await res.json();
-        setMessage(`❌ ${error.error}`);
-      }
-    } catch (err) {
-      setMessage(`❌ An unexpected error occurred: ${err}`);
+    if (res?.ok) {
+      setMessage("✅ Login successful!");
+      window.location.href = "/home"; // redirect manually
+    } else {
+      setMessage("❌ Invalid email or password.");
     }
   };
 
@@ -40,11 +34,25 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="loginEmail" className="form-label">Email address</label>
-            <input type="email" className="form-control" id="loginEmail" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input
+              type="email"
+              className="form-control"
+              id="loginEmail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
           <div className="mb-3">
             <label htmlFor="loginPassword" className="form-label">Password</label>
-            <input type="password" className="form-control" id="loginPassword" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input
+              type="password"
+              className="form-control"
+              id="loginPassword"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
           <button type="submit" className="btn btn-primary w-100">Login</button>
         </form>
@@ -54,7 +62,7 @@ export default function LoginPage() {
           </div>
         )}
         <div className="mt-3 text-center">
-          <span>Dont have an account? </span>
+          <span>Don’t have an account? </span>
           <Link href="/auth/register" className="link-primary">Register</Link>
         </div>
       </div>
