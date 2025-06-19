@@ -1,14 +1,17 @@
 import { prop, getModelForClass} from '@typegoose/typegoose';
+import mongoose from 'mongoose';
 
-class Meal {
+export class Meal {
+  public _id!: mongoose.ObjectId;
+
   @prop({ required: true })
   public name?: string;
 
   @prop({ required: true })
-  public calories?: number;
+  public calorie?: number;
 
-  @prop()
-  public protien?: number;
+  @prop({ required: true })
+  public protein!: number;
 
   @prop({ required: true })
   public time?: string; // e.g., '08:30 AM'
