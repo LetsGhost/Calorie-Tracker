@@ -43,12 +43,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
 }
 
+
+// Somehow i get this error 
+// 
+// "Error: Error: Diary validation failed: mealList.0.protein: Path `protein` is required., mealList.1.protein: Path `protein` is required."
+//
+// Need to investigate this issue
+// It seems like the `protein` field is not being set correctly in some cases, leading
+
 export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: string, kg: number) {
   await dbConnect();
 
   try {
     // Find the user by ID
     const existingUser = await UserModel.findById(userId);
+
+    console.log('Existing meal:', mealData);
 
     if (!existingUser) {
       throw new Error('User not found');
@@ -81,7 +91,7 @@ export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: strin
       const meal = new Meal();
       meal.name = mealData.name!;
       meal.calorie = calorie;
-      meal.protein = protein;
+      meal.protein = protein; // Ensure protein is always defined
       meal.time = mealData.time ?? new Date().toISOString();
       meal.barcode = mealData.barcode ?? '';
       meal.createdAt = new Date();
@@ -89,10 +99,14 @@ export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: strin
 
       diary?.mealList?.push(meal);
 
+      console.log('Updated diary:', diary.mealList);
+
       // Save the updated diary
       await diary.save();
       return diary;
     } else {
+
+      console.log("Should not get triggered")
       // Create a new diary for the user
       const calorie = mealData.calorie ?? 0; // Default to 0 if undefined
       const protein = mealData.protein ?? 0; // Default to 0 if undefined
@@ -101,7 +115,7 @@ export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: strin
       const meal = new Meal();
       meal.name = mealData.name!;
       meal.calorie = calorie;
-      meal.protein = protein;
+      meal.protein = protein; // Ensure protein is always defined
       meal.time = mealData.time ?? new Date().toISOString();
       meal.barcode = mealData.barcode ?? '';
       meal.createdAt = new Date();

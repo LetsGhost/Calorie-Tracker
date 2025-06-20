@@ -21,6 +21,9 @@ export class Meal {
   @prop()
   public barcode?: string;
 
+  @prop({ required: true })
+  public origin?: string; // e.g., 'Open Food Facts' or 'User Created'
+
   @prop({ default: Date.now })
   public createdAt?: Date;
 }
