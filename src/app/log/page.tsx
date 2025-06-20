@@ -8,7 +8,7 @@ export default function AddMealOptions() {
       <h2 className="text-center mb-4">Add a Meal</h2>
       <div className="row g-4 justify-content-center">
         <div className="col-md-4">
-          <Link href="/add/barcode" className="text-decoration-none">
+          <Link href="/add/scan" className="text-decoration-none">
             <div className="card h-100 text-center p-4 shadow-sm">
               <h4 className="mb-3">📷 Scan Barcode</h4>
               <p className="text-muted">Use your camera to scan a food barcode and log it quickly.</p>

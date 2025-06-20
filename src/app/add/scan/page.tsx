@@ -54,19 +54,19 @@ export default function ScanBarcodePage() {
               } else {
                 setProductData(null);
                 setMessage(null);
-                setError('Product not found in Open Food Facts.');
+                setError('Product not found in Open Food Facts. Please proceed to add it manually.');
               }
             })
             .catch((err) => {
               console.error(err);
               setProductData(null);
               setMessage(null);
-              setError('Error fetching product data.');
+              setError('Error fetching product data. Please try again later.');
             });
         } else {
           setScannedResult(null);
           setProductData(null);
-          setError('No barcode detected.');
+          setError('No barcode detected. Please try again with a clearer image.');
         }
       }
     );
@@ -99,7 +99,7 @@ export default function ScanBarcodePage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         setMessage(`Added ${amountKg} kg of ${mealData.name} to your meal list.`);
         setAmountKg('');
       } else {
