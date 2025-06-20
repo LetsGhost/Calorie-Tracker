@@ -1,6 +1,8 @@
 import { prop, getModelForClass} from '@typegoose/typegoose';
 import mongoose from 'mongoose';
 
+// Make that an meal gets marked as user created and as pulled from open food facts
+
 export class Meal {
   public _id!: mongoose.ObjectId;
 
