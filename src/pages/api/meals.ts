@@ -20,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { name, calorie, protein, barcode, kg, origin } = req.body;
+      console.log('req.body:', req.body);
 
       if (
         typeof name !== 'string' ||
@@ -27,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isNaN(parseFloat(protein)) ||
         !['Open Food Facts', 'User Created'].includes(origin)
       ) {
+        console.error('Invalid input:', { name, calorie, protein, barcode, kg, origin });
         return res.status(400).json({ error: 'Invalid or missing fields' });
       }
 

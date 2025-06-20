@@ -39,17 +39,19 @@ export default function AddManualMeal() {
       return;
     }
     setMessage('Saving meal...');
-    fetch('/api/meals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const requestBody = {
         name,
         calorie: calories,
         protein,
         barcode: barcode || '',
         time: new Date().toISOString(),
         kg: formData.kg,
-      }),
+        origin: 'User Created',
+    };
+    fetch('/api/meals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody),
     })
       .then(res => {
         if (!res.ok) throw new Error('Failed to save meal' + `: ${res.statusText}`);

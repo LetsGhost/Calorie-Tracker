@@ -43,22 +43,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
 }
 
-
-// Somehow i get this error 
-// 
-// "Error: Error: Diary validation failed: mealList.0.protein: Path `protein` is required., mealList.1.protein: Path `protein` is required."
-//
-// Need to investigate this issue
-// It seems like the `protein` field is not being set correctly in some cases, leading
-
 export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: string, kg: number) {
   await dbConnect();
 
   try {
     // Find the user by ID
     const existingUser = await UserModel.findById(userId);
-
-    console.log('Existing meal:', mealData);
 
     if (!existingUser) {
       throw new Error('User not found');
@@ -98,8 +88,6 @@ export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: strin
       meal.eatenCalories = totalCalories;
 
       diary?.mealList?.push(meal);
-
-      console.log('Updated diary:', diary.mealList);
 
       // Save the updated diary
       await diary.save();
