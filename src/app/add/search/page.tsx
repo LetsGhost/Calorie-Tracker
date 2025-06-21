@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaUser, FaGlobe } from 'react-icons/fa';
+import ConfirmAddFoodModal from '../../components/AddFoodSearch';
 
 interface FoodItem {
   id: string;
@@ -14,6 +15,8 @@ interface FoodItem {
 export default function SearchDatabasePage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<FoodItem[]>([]);
+  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null); // State for selected food
+  const [grams, setGrams] = useState(100); // Default grams for the modal
 
   const handleSearch = () => {
     fetch(`/api/meals`)
@@ -35,6 +38,20 @@ export default function SearchDatabasePage() {
   useEffect(() => {
     handleSearch();
   }, []);
+
+  const handleAddClick = (food: FoodItem) => {
+    setSelectedFood(food); // Set the selected food item
+  };
+
+  const handleModalClose = () => {
+    setSelectedFood(null); // Close the modal
+  };
+
+  const handleAddToMealList = () => {
+    console.log(`Adding ${grams} grams of ${selectedFood?.name} to the meal list.`);
+    // Add logic to update the meal list or send data to the server
+    handleModalClose(); // Close the modal after adding
+  };
 
   return (
     <>
@@ -83,10 +100,25 @@ export default function SearchDatabasePage() {
                   ) : null}
                   <div className="text-muted small">{item.calorie} kcal</div>
                 </div>
-                <button className="btn btn-success btn-sm">Add</button>
+                <button
+                  className="btn btn-success btn-sm"
+                  onClick={() => handleAddClick(item)} // Trigger modal
+                >
+                  Add
+                </button>
               </li>
             ))}
           </ul>
+        )}
+
+        {selectedFood && (
+          <ConfirmAddFoodModal
+            food={selectedFood}
+            grams={grams}
+            onGramsChange={setGrams}
+            onAdd={handleAddToMealList}
+            onClose={handleModalClose}
+          />
         )}
       </div>
     </>

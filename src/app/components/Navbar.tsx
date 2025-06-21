@@ -28,6 +28,9 @@ export default function Navbar() {
               <Link className="nav-link" href="/log">Log Meal</Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" href="/settings">Settings</Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" href="/auth/login" onClick={() => signOut()}>Logout</Link>
             </li>
           </ul>

@@ -23,7 +23,7 @@ export class User {
   @prop({ required: true })
   public createdAt?: Date;
 
-  @prop({ required: true, ref: () => 'Diary'})
+  @prop({ ref: () => 'Diary'})
   public diary?: Ref<Diary>;
 
 }

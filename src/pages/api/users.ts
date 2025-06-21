@@ -12,13 +12,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!email || !password) {
         return res.status(400).json({ error: 'Missing email or password' });
       }
+
       // Check if user already exists
-      const existingUser = await UserModel.find({ email });
+      const existingUser = await UserModel.findOne({ email });
+      console.log('Existing user:', existingUser);
       if (existingUser) { 
         return res.status(409).json({ error: 'User already exists' });
       }
 
       const user = await UserModel.create({ email, password, createdAt: new Date() });
+
       return res.status(201).json(user);
     } catch (error) {
       console.error('Error creating user:', error);
