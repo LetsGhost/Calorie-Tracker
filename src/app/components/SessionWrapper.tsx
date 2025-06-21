@@ -2,24 +2,27 @@
 
 import { SessionProvider } from "next-auth/react";
 import { ReactNode } from "react";
-import Navbar from "./Navbar"; // Import the Navbar component
-import { usePathname } from "next/navigation"; // Import usePathname to check the current route
+import Navbar from "./Navbar";
+import { usePathname } from "next/navigation";
+import AuthWrapper from "./AuthWrapper"; // Import AuthWrapper
 
 type Props = {
   children: ReactNode;
 };
 
 export default function SessionWrapper({ children }: Props) {
-  const pathname = usePathname(); // Get the current route
+  const pathname = usePathname();
 
   // Define routes where the Navbar should be excluded
   const excludeNavbarRoutes = ["/auth/login", "/auth/register"];
 
   return (
     <SessionProvider>
-      {/* Conditionally render Navbar */}
-      {!excludeNavbarRoutes.includes(pathname) && <Navbar />}
-      {children}
+      {/* Wrap children with AuthWrapper */}
+      <AuthWrapper>
+        {!excludeNavbarRoutes.includes(pathname) && <Navbar />}
+        {children}
+      </AuthWrapper>
     </SessionProvider>
   );
 }

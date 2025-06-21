@@ -6,11 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CalorieSummary from '../components/CalorieSummary';
 import MealList from '../components/MealList';
 import { useState, useEffect } from 'react';
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
   const [lastCalories, setLastCalories] = useState(0);
   const [diaryData, setDiaryData] = useState(null);
 
@@ -35,20 +32,9 @@ export default function HomePage() {
 
   // Use useEffect to fetch data on page load
   useEffect(() => {
-    if (session) {
-      fetchDiaryData();
-    }
-  }, [session]);
+    fetchDiaryData();
+  });
 
-  // Handle loading and redirect cases
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
-
-  if (!session) {
-    redirect("/auth/login");
-    return null; // Ensure the component returns null after redirect
-  }
 
   return (
     <>
@@ -62,8 +48,6 @@ export default function HomePage() {
           crossOrigin="anonymous"
         />
       </Head>
-
-      
 
       <div className="container py-5">
         <h1 className="mb-4 text-center">My Calorie Tracker</h1>
