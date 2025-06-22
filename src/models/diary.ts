@@ -1,6 +1,9 @@
 import { prop, getModelForClass } from '@typegoose/typegoose';
+import mongoose from 'mongoose';
 
 export class Meal {
+  public _id!: mongoose.ObjectId;
+
   @prop({ required: true })
   public name!: string;
 
@@ -24,6 +27,8 @@ export class Meal {
 }
 
 export class Diary {
+  public _id!: mongoose.ObjectId;
+
   @prop({ required: true, type: () => [Meal] }) // Reference the Meal class
   public mealList?: Meal[];
 

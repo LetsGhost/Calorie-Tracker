@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongodb';
-import { DiaryModel } from '@/models/diary';
+import { DiaryModel, Diary } from '@/models/diary';
 import { UserModel } from '@/models/user';
 import { getServerSession } from '@/auth';
 import { calculateCalories } from '@/utils/calorieCalculater';
@@ -33,6 +33,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const diary = user.diary;
 
       return res.status(200).json(diary);
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).json({ error: 'Server error' });
+    }
+  }
+
+  // Does not seem to update the diary correctly, fix later
+  if (req.method === "DELETE") {
+    try {
+      console.log('Delete request received:');
+
+      const { id } = req.query;
+
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ error: 'Invalid meal ID' });
+      }
+
+      // Ensure the diary is populated
+      const userId = session?.user.id;
+      const user = await UserModel.findById(userId).populate({
+        path: 'diary',
+        model: 'Diary', // Ensure the Diary model is specified
+      });
+
+      console.log('User:', user);
+
+      if (!user || !user.diary) {
+        return res.status(404).json({ error: 'Diary not found' });
+      }
+
+      const diary = user.diary as Diary; // Use the Diary class directly
+      const mealIndex = diary.mealList?.findIndex(meal => meal._id.toString() === id);
+      if (mealIndex === undefined || mealIndex === -1) {
+        return res.status(404).json({ error: 'Meal not found' });
+      }
+
+      const mealToDelete = diary.mealList![mealIndex];
+
+      // Remove the meal from the mealList
+      diary.mealList?.splice(mealIndex, 1);
+
+      // Recalculate calories and protein arrays
+      const lastCalories = diary.calories?.length ? diary.calories[diary.calories.length - 1] : 0;
+      const lastProtein = diary.protein?.length ? diary.protein[diary.protein.length - 1] : 0;
+
+      const updatedCalories = lastCalories - mealToDelete.eatenCalories!;
+      const updatedProtein = lastProtein - mealToDelete.protein;
+
+      diary.calories?.push(updatedCalories);
+      diary.protein?.push(updatedProtein);
+
+      // Update the diary in the database
+      await DiaryModel.findByIdAndUpdate(diary._id, diary);
+
+      console.log("Updated diary:", diary);
+      return res.status(200).json({ message: 'Meal deleted successfully' });
     } catch (error) {
       console.error('Error:', error);
       return res.status(500).json({ error: 'Server error' });

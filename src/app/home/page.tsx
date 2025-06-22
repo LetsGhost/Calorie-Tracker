@@ -30,11 +30,28 @@ export default function HomePage() {
     }
   };
 
+  // Function to handle meal deletion
+  const handleDeleteMeal = async (id: string) => {
+    try {
+      const response = await fetch(`/api/diarys?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete meal');
+      }
+
+      // Update the diary data after deletion
+      fetchDiaryData();
+    } catch (error) {
+      console.error('Error deleting meal:', error);
+    }
+  };
+
   // Use useEffect to fetch data on page load
   useEffect(() => {
     fetchDiaryData();
-  });
-
+  }, []);
 
   return (
     <>
@@ -57,11 +74,11 @@ export default function HomePage() {
         </div>
 
         <div className="mb-4">
-          <MealList meals={diaryData?.mealList || []} />
+          <MealList meals={diaryData?.mealList || []} onDelete={handleDeleteMeal} />
         </div>
 
         <div className="text-center">
-          <Link href="/log" className="btn btn-success" >
+          <Link href="/log" className="btn btn-success">
             + Add Meal
           </Link>
         </div>
