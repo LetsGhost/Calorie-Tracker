@@ -48,7 +48,6 @@ export default function SearchDatabasePage() {
   };
 
   const handleAddToMealList = () => {
-    console.log(`Adding ${grams} grams of ${selectedFood?.name} to the meal list.`);
     // Add logic to update the meal list or send data to the server
     handleModalClose(); // Close the modal after adding
   };

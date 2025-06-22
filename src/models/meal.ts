@@ -15,9 +15,6 @@ export class Meal {
   @prop({ required: true })
   public protein!: number;
 
-  @prop({ required: true })
-  public time?: string; // e.g., '08:30 AM'
-
   @prop()
   public barcode?: string;
 

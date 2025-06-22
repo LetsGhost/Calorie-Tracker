@@ -20,7 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const { name, calorie, protein, barcode, kg, origin } = req.body;
-      console.log('req.body:', req.body);
 
       if (
         typeof name !== 'string' ||
@@ -36,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         name,
         calorie: parseFloat(calorie),
         protein: parseFloat(protein),
-        time: new Date().toISOString(),
         barcode: barcode || '',
         origin,
         createdAt: new Date(),
@@ -49,13 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const existingMeal = await MealModel.findOne({ $or: query });
-      console.log('Query for existing meal:', existingMeal);
-
       if (existingMeal) {
         // log the meal in the diary
         updateOrCreateDiary(existingMeal, session.user.id, kg);
-
-        console.log('Meal already exists:', existingMeal);
         return res.status(200).json(existingMeal);
       }
 

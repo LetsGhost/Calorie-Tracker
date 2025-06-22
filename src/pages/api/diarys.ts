@@ -93,8 +93,6 @@ export async function updateOrCreateDiary(mealData: Partial<Meal>, userId: strin
       await diary.save();
       return diary;
     } else {
-
-      console.log("Should not get triggered")
       // Create a new diary for the user
       const calorie = mealData.calorie ?? 0; // Default to 0 if undefined
       const protein = mealData.protein ?? 0; // Default to 0 if undefined
