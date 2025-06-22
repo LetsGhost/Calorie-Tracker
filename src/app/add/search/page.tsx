@@ -84,32 +84,30 @@ export default function SearchDatabasePage() {
           </div>
         </form>
 
-        {results.length > 0 && (
-          <ul className="list-group">
-            {results.map((item) => (
-              <li
-                key={item.id}
-                className="list-group-item d-flex justify-content-between align-items-center"
+        <ul className="list-group">
+          {results.map((item) => (
+            <li
+              key={item.id} // Ensure `item.id` is unique
+              className="list-group-item d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <strong>{item.name}</strong>{' '}
+                {item.origin === 'User Created' ? (
+                  <FaUser title="User created" className="text-secondary ms-1" />
+                ) : item.origin === 'Open Food Facts' ? (
+                  <FaGlobe title="Open Food Facts" className="text-info ms-1" />
+                ) : null}
+                <div className="text-muted small">{item.calorie} kcal</div>
+              </div>
+              <button
+                className="btn btn-success btn-sm"
+                onClick={() => handleAddClick(item)} // Trigger modal
               >
-                <div>
-                  <strong>{item.name}</strong>{' '}
-                  {item.origin === 'User Created' ? (
-                    <FaUser title="User created" className="text-secondary ms-1" />
-                  ) : item.origin === 'Open Food Facts' ? (
-                    <FaGlobe title="Open Food Facts" className="text-info ms-1" />
-                  ) : null}
-                  <div className="text-muted small">{item.calorie} kcal</div>
-                </div>
-                <button
-                  className="btn btn-success btn-sm"
-                  onClick={() => handleAddClick(item)} // Trigger modal
-                >
-                  Add
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+                Add
+              </button>
+            </li>
+          ))}
+        </ul>
 
         {selectedFood && (
           <ConfirmAddFoodModal

@@ -52,8 +52,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Query for existing meal:', existingMeal);
 
       if (existingMeal) {
+        // log the meal in the diary
+        updateOrCreateDiary(existingMeal, session.user.id, kg);
+
         console.log('Meal already exists:', existingMeal);
-        return res.status(409).json({ error: 'Meal already exists' });
+        return res.status(200).json(existingMeal);
       }
 
       const newMeal = await MealModel.create(meal);
