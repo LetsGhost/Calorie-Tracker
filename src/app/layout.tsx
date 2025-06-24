@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Calorie Tracker",
+  title: "CALQ",
   description: "To track your daily calorie intake and manage your meals effectively.",
 };
 
