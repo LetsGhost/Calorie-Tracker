@@ -8,7 +8,10 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
-        <Link className="navbar-brand" href="/">Calorie Tracker</Link>
+        <Link className="navbar-brand d-flex align-items-center" href="/">
+          <img src="/logo-q.svg" alt="Logo" width="30" height="30" className="me-2" />
+          Calorie Quicktrack
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
