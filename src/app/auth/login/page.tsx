@@ -5,6 +5,7 @@ import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { signIn } from "next-auth/react";
 
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +34,10 @@ export default function LoginPage() {
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100">
       <div className="card p-4 shadow" style={{ maxWidth: 400, width: "100%" }}>
+        {/* Logo added above the form */}
+        <div className="text-center mb-4">
+          <img src="/logo-q.svg" alt="Logo" width="100" height="auto" />
+        </div>
         <h2 className="mb-4 text-center">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
