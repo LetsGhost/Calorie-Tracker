@@ -68,7 +68,6 @@ export const authOptions: NextAuthConfig = {
   },
   callbacks: {
   async jwt({ token, user }) {
-    console.log("JWT Callback:");
     if (user && "_id" in user && user._id) {
       token.id = user._id.toString();
     } else if (user?.id) {
@@ -77,7 +76,6 @@ export const authOptions: NextAuthConfig = {
     return token;
   },
   async session({ session, token }: { session: Session, token: JWT }) {
-    console.log("Session Callback: " + JSON.stringify(session));
     if (token?.id && session.user) {
       session.user.id = token.id as string;
     }
