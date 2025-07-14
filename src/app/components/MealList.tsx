@@ -15,6 +15,7 @@ interface MealListProps {
   onDelete: (id: string) => void; // Callback for delete action
 }
 
+
 export default function MealList({ meals, onDelete }: MealListProps) {
   // Helper function to format time
   const formatTime = (isoTime: string) => {
@@ -22,6 +23,8 @@ export default function MealList({ meals, onDelete }: MealListProps) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Format as HH:mm
   };
 
+  // It works now, on the backend the record gets deleted
+  // But the UI does not update and somehow to requests get fired off
   const submitDelete = async (id: string) => {
     try {
       const response = await fetch(`/api/diarys?id=${id}`, {

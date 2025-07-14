@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import type { Ref } from '@typegoose/typegoose/lib/types';
 import { Diary } from './diary';
 import mongoose from 'mongoose';
+import { UserInfo } from './userInfo';
 
 @pre<User>('save', async function () {
   if (this.isModified('password')) {  
@@ -23,9 +24,11 @@ export class User {
   @prop({ required: true })
   public createdAt?: Date;
 
+  @prop({ ref: () => 'UserInfo'})
+  public userInfo?: Ref<UserInfo>;
+
   @prop({ ref: () => 'Diary'})
   public diary?: Ref<Diary>;
-
 }
 
 
