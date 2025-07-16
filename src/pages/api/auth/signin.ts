@@ -6,6 +6,7 @@ import dbConnect from '@/lib/mongodb';
 import { UserModel } from "@/models/user";
 import compare from "bcrypt";
 import { JWT } from "next-auth/jwt";
+import { rateLimit } from "@/middleware/rateLimiter";
 
 // Logic to find the user in the db
 async function findUserByEmail(email: string) {
@@ -29,6 +30,11 @@ export const authOptions: NextAuthConfig = {
       },
       async authorize(credentials) {
         try{
+          // Apply rate limiting
+          const res = req.res; // Get the response object
+          if (!res) throw new Error("Response object is unavailable.");
+          await rateLimit(req, res, () => Promise.resolve());
+
           if (!credentials?.email || !credentials?.password) {
             console.error("Email or password is missing");
             throw new Error("Email and password are required");
