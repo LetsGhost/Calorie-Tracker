@@ -14,7 +14,7 @@ export default function SessionWrapper({ children }: Props) {
   const pathname = usePathname();
 
   // Define routes where the Navbar should be excluded
-  const excludeNavbarRoutes = ["/auth/login", "/auth/register"];
+  const excludeNavbarRoutes = ["/auth/login", "/auth/register", "/userForm"];
 
   return (
     <SessionProvider>
