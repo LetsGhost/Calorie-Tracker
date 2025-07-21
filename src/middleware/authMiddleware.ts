@@ -6,8 +6,6 @@ export async function withAuth(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-
-  console.log('withAuth middleware called');
   const session = await getServerSession(req, res) as Session;
 
   // Check if the user is authenticated
