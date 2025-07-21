@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongodb';
 import { MealModel } from '@/models/meal';
 import { updateOrCreateDiary } from './diarys';
-import { getServerSession } from '@/auth';
+import { withAuth } from '@/middleware/authMiddleware';
 
 type Session = {
   user: {
@@ -15,7 +15,7 @@ type Session = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
 
-  const session = (await getServerSession(req, res)) as Session;
+  const session = (await withAuth(req, res)) as Session | null;
 
   if (req.method === 'POST') {
     try {
@@ -47,20 +47,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const existingMeal = await MealModel.findOne({ $or: query });
-      if (existingMeal) {
+      if (existingMeal && session?.user.id) {
         // log the meal in the diary
-        updateOrCreateDiary(existingMeal, session.user.id, kg);
+        updateOrCreateDiary(existingMeal, session?.user.id, kg);
         return res.status(200).json(existingMeal);
       }
 
       const newMeal = await MealModel.create(meal);
 
-      const user = session.user;
+      if (session?.user?.id) {
+        const diary = updateOrCreateDiary(newMeal, session.user.id, kg);
 
-      const diary = updateOrCreateDiary(newMeal, user.id, kg);
-
-      if (!diary) {
-        return res.status(500).json({ error: 'Failed to update or create diary' });
+        if (!diary) {
+          return res.status(500).json({ error: 'Failed to update or create diary' });
+        }
       }
 
       return res.status(201).json(newMeal);

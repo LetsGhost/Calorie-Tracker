@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import dbConnect from '@/lib/mongodb';
 import { UserInfoModel } from '@/models/userInfo';
 import { UserModel } from '@/models/user';
-import { getServerSession } from '@/auth';
+import { withAuth } from '@/middleware/authMiddleware';
 
 type Session = {
   user: {
@@ -15,7 +15,7 @@ type Session = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
   await dbConnect();
 
-  const session = (await getServerSession(req, res)) as Session;
+  const session = (await withAuth(req, res)) as Session | null;
 
   if(req.method === 'POST') {
     try { 

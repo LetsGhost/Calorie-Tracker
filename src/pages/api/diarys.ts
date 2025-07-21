@@ -2,28 +2,21 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongodb';
 import { DiaryModel } from '@/models/diary';
 import { UserModel } from '@/models/user';
-import { getServerSession } from '@/auth';
 import { calculateCalories } from '@/utils/calorieCalculater';
 import { Meal } from '@/models/diary';
+import { withAuth } from '@/middleware/authMiddleware';
+import { Session } from 'next-auth';
 
-type Session = {
-  user: {
-    id: string;
-    name?: string;
-    email?: string;
-  };
-};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
 
-  const session = (await getServerSession(req, res)) as Session;
+  const session = (await withAuth(req, res)) as Session | null;
 
   if (req.method === 'GET') {
     try {
       // Get the diary from the database
       const userId = session?.user.id;
-
       const user = await UserModel.findById(userId).populate('diary');
 
       if (!user || !user.diary) {

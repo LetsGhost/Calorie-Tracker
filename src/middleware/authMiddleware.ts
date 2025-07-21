@@ -1,21 +1,31 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from '@/auth';
+import { Session } from 'inspector/promises';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export async function authenticate(req: NextApiRequest, res: NextApiResponse, next: () => void) {
-  try {
-    const session = await getServerSession(req, res);
+export async function withAuth(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
 
-    if (!session) {
-      return res.status(401).json({ error: 'Unauthorized: Please log in to access this resource.' });
-    }
+  console.log('withAuth middleware called');
+  const session = await getServerSession(req, res) as Session;
 
-    // Attach the session to the request object for further use
-    (req as any).session = session;
-
-    // Proceed to the next handler
-    next();
-  } catch (error) {
-    console.error('Authentication error:', error);
-    res.status(500).json({ error: 'Internal server error during authentication.' });
+  // Check if the user is authenticated
+  if (!session) {
+    res.status(401).json({ error: 'User is not authenticated' });
+    return null;
   }
+
+  // Check if the user has the required role(s)
+  // No role based permissions are implemented yet
+  /*
+  if (roles.length > 0 && !roles.includes(session.user.role)) {
+    res.status(403).json({
+      error: 'Unauthorized access: User does not have the required privileges.',
+    });
+    return null;
+  }
+    */
+
+  return session;
 }
