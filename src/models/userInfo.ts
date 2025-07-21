@@ -11,15 +11,14 @@ export class UserInfo {
   public weight!: number;
 
   @prop({required: true})
-  public age!: Date;
+  public dot!: Date;
 
   @prop({required: true})
   public calorieGoal!: number;
 
   @prop({ default: Date.now })
   public createdAt?: Date;
-
-
+  
 }
 
 export const UserInfoModel = getModelForClass(UserInfo);

@@ -23,11 +23,18 @@ export default function AuthWrapper({ children }: Props) {
   }, [session, status, pathname]);
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return (
+      <div className="loading-screen">
+        <div className="progress-bar">
+          <div className="progress"></div>
+        </div>
+        <p>Loading your experience...</p>
+      </div>
+    );
   }
 
   if (!session && !publicRoutes.includes(pathname)) {
-    return null; // Ensure the component returns null after redirect
+    return null;
   }
 
   return <>{children}</>;

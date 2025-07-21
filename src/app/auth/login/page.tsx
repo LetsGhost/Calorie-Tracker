@@ -24,6 +24,13 @@ export default function LoginPage() {
 
     if (res?.ok) {
       setMessage("✅ Login successful!");
+
+      // if the user does not have a userInfo, redirect to the user info page
+      if (!res?.userInfo) {
+        window.location.href = "/userForm"; // redirect to user info page
+        return;
+      }
+
       window.location.href = "/home"; // redirect manually
     } else {
       console.error("Login failed:", res?.error);

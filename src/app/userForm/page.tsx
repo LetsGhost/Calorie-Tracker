@@ -6,7 +6,7 @@ export default function CompleteUserInfo() {
   const [formData, setFormData] = useState({
     height: '',
     weight: '',
-    age: '',
+    dot: '',
     calorieGoal: '',
   });
   const [message, setMessage] = useState('');
@@ -18,9 +18,9 @@ export default function CompleteUserInfo() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { height, weight, age, calorieGoal } = formData;
+    const { height, weight, dot, calorieGoal } = formData;
 
-    if (!height || !weight || !age || !calorieGoal) {
+    if (!height || !weight || !dot || !calorieGoal) {
       setMessage('Please fill in all fields.');
       return;
     }
@@ -29,13 +29,13 @@ export default function CompleteUserInfo() {
       const res = await fetch('/api/userInfo', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ height, weight, age, calorieGoal }),
+        body: JSON.stringify({ height, weight, dot, calorieGoal }),
       });
 
       if (res.ok) {
         setMessage('✅ User info saved successfully!');
-        setFormData({ height: '', weight: '', age: '', calorieGoal: '' });
-        // Redirect or perform further actions
+        setFormData({ height: '', weight: '', dot: '', calorieGoal: '' });
+        window.location.href = '/home'; // Redirect to home after saving
       } else {
         const error = await res.json();
         setMessage(`❌ ${error.error}`);
@@ -79,13 +79,13 @@ export default function CompleteUserInfo() {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="age" className="form-label">Age</label>
+            <label htmlFor="dot" className="form-label">Birthday</label>
             <input
-              type="number"
+              type="date"
               className="form-control"
-              id="age"
-              name="age"
-              value={formData.age}
+              id="dot"
+              name="dot"
+              value={formData.dot}
               onChange={handleChange}
               required
             />

@@ -48,10 +48,18 @@ export const authOptions: NextAuthConfig = {
             throw new Error("Invalid password");
           }
 
-          // If everything is fine, return the user object
+          if (!user.userInfo) {
+            return {
+              id: user._id.toString(),
+              email: user.email,
+              userInfo: false,
+            }
+          }
+          
           return {
             id: user._id.toString(),
             email: user.email,
+            userInfo: true,
           }
         } catch (error) {
           console.error("Error during authorization:", error);

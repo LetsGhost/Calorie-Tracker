@@ -24,11 +24,22 @@ export class User {
   @prop({ required: true })
   public createdAt?: Date;
 
+  @prop({ required: true })
+  public oldDiarys: oldDiarys[] = [];
+
   @prop({ ref: () => 'UserInfo'})
   public userInfo?: Ref<UserInfo>;
 
   @prop({ ref: () => 'Diary'})
   public diary?: Ref<Diary>;
+}
+
+export class oldDiarys {
+  @prop({ required: true })
+  public diaryId?: string;
+
+  @prop({ required: true })
+  public createdAt?: Date;
 }
 
 

@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 export default function HomePage() {
   const [lastCalories, setLastCalories] = useState(0);
   const [diaryData, setDiaryData] = useState(null);
+  const [calorieGoal, setCalorieGoal] = useState(2200); // Default calorie goal
 
   // Fetch the user's diary data
   const fetchDiaryData = async () => {
@@ -29,6 +30,31 @@ export default function HomePage() {
       console.error(error);
     }
   };
+
+  const fetchCalorieGoal = async () => {
+    try {
+      // Fetch userInfo
+      const response = await fetch('/api/userInfo', {
+        method: "GET"
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+      
+      const userInfo = await response.json();
+      if (!userInfo || !userInfo.calorieGoal) {
+        console.warn('No calorie goal found, using default value');
+        return;
+      }
+
+      setCalorieGoal(userInfo.calorieGoal);
+
+      console.log('User calorie goal:', userInfo);
+    } catch (error) {
+      console.error('Error fetching calorie goal:', error);
+    }
+  }
 
   // Function to handle meal deletion
   const handleDeleteMeal = async (id: string) => {
@@ -51,6 +77,7 @@ export default function HomePage() {
   // Use useEffect to fetch data on page load
   useEffect(() => {
     fetchDiaryData();
+    fetchCalorieGoal();
   }, []);
 
   return (
@@ -70,7 +97,7 @@ export default function HomePage() {
         <h1 className="mb-4 text-center">My Calorie Tracker</h1>
 
         <div className="mb-4">
-          <CalorieSummary goal={2200} consumed={lastCalories} />
+          <CalorieSummary goal={calorieGoal} consumed={lastCalories} />
         </div>
 
         <div className="mb-4">

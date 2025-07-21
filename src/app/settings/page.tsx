@@ -16,10 +16,22 @@ export default function SettingsPage() {
     setUserInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('User Info Saved:', userInfo);
-    // You can later send this to your API/database
+    
+
+    // Here you would typically send the userInfo to your API
+    const res = await fetch('/api/userInfo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userInfo),
+    });
+
+    if (res.ok) {
+      console.log('Settings saved successfully');
+    } else {
+      console.log('Failed to save settings');
+    }
   };
 
   return (
