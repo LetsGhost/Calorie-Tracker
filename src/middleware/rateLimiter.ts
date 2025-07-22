@@ -1,18 +1,9 @@
-import { RateLimiterMemory } from 'rate-limiter-flexible';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import rateLimit from 'express-rate-limit';
 
-const rateLimiter = new RateLimiterMemory({
-  points: 10, // Number of requests
-  duration: 60, // Per 60 seconds
+export const apiRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: { error: 'Too many requests. Please try again later.' },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
-
-export async function rateLimit(req: NextApiRequest, res: NextApiResponse, next: () => void) {
-  try {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-    await rateLimiter.consume(ip as string);
-    next(); // Proceed to the next handler
-  } catch (rateLimiterRes) {
-    console.error('Rate limit exceeded:', rateLimiterRes);
-    res.status(429).json({ error: 'Too many requests. Please try again later.' });
-  }
-}
