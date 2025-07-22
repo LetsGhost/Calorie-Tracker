@@ -6,9 +6,16 @@ export async function withAuth(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  const excludedRoutes = [
+    { path: '/api/user', method: 'POST' },
+  ];
+
+  if (excludedRoutes.some(route => route.path === req.url && route.method === req.method)) {
+    return null;
+  }
+
   const session = await getServerSession(req, res) as Session;
 
-  // Check if the user is authenticated
   if (!session) {
     res.status(401).json({ error: 'User is not authenticated' });
     return null;
