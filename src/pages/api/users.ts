@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import dbConnect from '@/lib/mongodb';
 import { UserModel } from '@/models/user';
-import { rateLimit } from '@/middleware/rateLimiter';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
-  await rateLimit(req, res, async () => {
     await dbConnect();
 
     if(req.method === 'POST') {
@@ -38,5 +36,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.setHeader('Allow', ['POST']);
     return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
-  })
 }

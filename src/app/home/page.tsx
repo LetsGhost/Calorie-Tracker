@@ -37,20 +37,14 @@ export default function HomePage() {
       const response = await fetch('/api/userInfo', {
         method: "GET"
       });
-      console.log(response)
+      
       if (!response.ok) {
         throw new Error('Failed to fetch user info');
       }
       
-      const userInfo = await response.json();
-      if (!userInfo || !userInfo.calorieGoal) {
-        console.warn('No calorie goal found, using default value');
-        return;
-      }
+      const user = await response.json();
 
-      setCalorieGoal(userInfo.calorieGoal);
-
-      console.log('User calorie goal:', userInfo);
+      setCalorieGoal(user.userInfo.calorieGoal);
     } catch (error) {
       console.error('Error fetching calorie goal:', error);
     }

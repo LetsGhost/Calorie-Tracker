@@ -25,8 +25,11 @@ export default function LoginPage() {
     if (res?.ok) {
       setMessage("✅ Login successful!");
 
+      const response = await fetch('/api/userInfo')
+      const user = await response.json();
+
       // if the user does not have a userInfo, redirect to the user info page
-      if (!res?.userInfo) {
+      if (!user.userInfo) {
         window.location.href = "/userForm"; // redirect to user info page
         return;
       }

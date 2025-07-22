@@ -26,7 +26,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Missing required fields' });
       }
 
-      // Validate userId
       const user = await UserModel.findById(userId);
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -38,7 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Failed to create user info' });
       }
 
-      // add the refrence to the user
       user.userInfo = userInfo._id as unknown as typeof user.userInfo;
       await user.save();
 
@@ -49,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  else if (req.method === 'GET') {
+  if (req.method === 'GET') {
     try {
       const userId = session?.user.id;
 
